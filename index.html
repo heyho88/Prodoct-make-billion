@@ -78,6 +78,21 @@
       color: #1a1f36;
     }
 
+    /* Disqus Container styling for better theme detection */
+    #disqus-container {
+      margin-top: 32px;
+      padding: 24px;
+      background: #1a1f36; /* Solid background for dark mode */
+      border-radius: var(--radius);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+
+    body.light #disqus-container {
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
     /* background glow */
     .bg-blur {
       position: fixed;
