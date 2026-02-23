@@ -1,179 +1,196 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>시간 가격 계산기</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RE:DAY — 실패해도 유지되는 하루</title>
 
-<style>
-  :root {
-    --bg1:#120c1c;
-    --bg2:#1f1740;
-    --bg3:#3a2b6f;
-    --card:rgba(255,255,255,0.14);
-    --main:#ff4d4d;
-    --sub:#ffb347;
-    --text:#f6f4ff;
-  }
+  <style>
+    :root {
+      --bg1: #1a1f36;
+      --bg2: #2b1055;
+      --primary: #7c7cff;
+      --secondary: #ff9f9f;
+      --accent: #6fffe9;
+      --card: rgba(255,255,255,0.12);
+      --radius: 16px;
+    }
 
-  * { box-sizing:border-box; font-family:Pretendard, sans-serif; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
 
-  body {
-    margin:0;
-    min-height:100vh;
-    background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:var(--text);
-  }
+    /* background glow */
+    .bg-blur {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: var(--primary);
+      filter: blur(120px);
+      opacity: 0.4;
+      top: -100px;
+      right: -80px;
+      z-index: 0;
+    }
 
-  .app {
-    width:min(480px,94%);
-    padding:28px 24px 32px;
-    border-radius:24px;
-    backdrop-filter:blur(18px);
-    background:linear-gradient(
-      180deg,
-      rgba(255,255,255,0.18),
-      rgba(255,255,255,0.05)
-    );
-    box-shadow:0 35px 70px rgba(0,0,0,.55);
-  }
+    .app {
+      width: 100%;
+      max-width: 420px;
+      z-index: 1;
+    }
 
-  h1 {
-    margin:0 0 6px;
-    font-size:22px;
-  }
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow:
+        0 20px 40px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.15);
+      transition: transform .4s cubic-bezier(.2,.8,.2,1);
+    }
 
-  p {
-    margin:0 0 22px;
-    font-size:14px;
-    opacity:.75;
-  }
+    .card:hover {
+      transform: translateY(-4px);
+    }
 
-  .inputs {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-    margin-bottom:20px;
-  }
+    h1 {
+      font-size: 22px;
+      margin: 0 0 8px;
+    }
 
-  input {
-    width:100%;
-    padding:14px;
-    border-radius:14px;
-    border:none;
-    background:rgba(255,255,255,.9);
-    font-size:15px;
-    font-weight:700;
-  }
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 24px;
+    }
 
-  button {
-    width:100%;
-    padding:16px;
-    border:none;
-    border-radius:16px;
-    background:linear-gradient(135deg,var(--main),var(--sub));
-    font-size:16px;
-    font-weight:900;
-    cursor:pointer;
-    box-shadow:0 16px 35px rgba(0,0,0,.45);
-    transition:all .25s cubic-bezier(.22,1,.36,1);
-  }
+    .section {
+      margin-bottom: 24px;
+    }
 
-  button:hover { transform:translateY(-2px) scale(1.02); }
-  button:active { transform:scale(.97); }
+    .label {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-bottom: 8px;
+    }
 
-  .result {
-    margin-top:24px;
-    padding:24px;
-    border-radius:18px;
-    background:var(--card);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,.25),
-      0 18px 40px rgba(0,0,0,.45);
-    text-align:center;
-    animation:pop .4s cubic-bezier(.22,1,.36,1);
-  }
+    .options {
+      display: flex;
+      gap: 12px;
+    }
 
-  .money {
-    font-size:28px;
-    font-weight:900;
-    margin-bottom:10px;
-  }
+    .option {
+      flex: 1;
+      padding: 14px 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      text-align: center;
+      cursor: pointer;
+      transition: all .3s cubic-bezier(.2,.8,.2,1);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
 
-  .msg {
-    font-size:14px;
-    opacity:.9;
-    line-height:1.5;
-  }
+    .option:hover {
+      transform: translateY(-2px) scale(1.03);
+      background: rgba(255,255,255,0.16);
+    }
 
-  @keyframes pop {
-    from { opacity:0; transform:translateY(10px) scale(.95); }
-    to { opacity:1; transform:none; }
-  }
-</style>
+    .option.active {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #111;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(124,124,255,0.4);
+    }
+
+    .cta {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      color: #111;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .35s cubic-bezier(.2,.8,.2,1);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+
+    .cta:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.6;
+      margin-top: 16px;
+    }
+  </style>
 </head>
-
 <body>
-<div class="app">
-  <h1>시간 가격 계산기</h1>
-  <p>목표 월수입을 입력하세요 (단위: 원)</p>
 
-  <div class="inputs" style="grid-template-columns: 1fr; margin-bottom: 12px;">
-    <input id="monthlyIncome" type="number" placeholder="목표 월 수입 (예: 10000000)" value="10000000" min="0">
-  </div>
+  <div class="bg-blur"></div>
 
-  <div class="inputs">
-    <input id="hour" type="number" placeholder="시간 (h)" min="0">
-    <input id="minute" type="number" placeholder="분 (m)" min="0">
-  </div>
+  <div class="app">
+    <div class="card">
+      <h1>오늘 상태만 알려줘</h1>
+      <div class="subtitle">잘 못해도 괜찮아. 시스템은 유지돼.</div>
 
-  <button id="calc">💣 이 시간의 진짜 가격</button>
-
-  <div id="output"></div>
-</div>
-
-<script>
-  const WORKING_HOURS_PER_MONTH = 176;
-
-  const messages = [
-    "이 시간은 사라진 게 아니라, 날려버린 거다.",
-    "이 돈을 벌 기회를 지금 태우고 있다.",
-    "편안함 치곤 가격이 너무 비싸다.",
-    "지금 이 선택이 반복되면, 미래도 이 가격이다.",
-    "이 시간으로 자유를 살 수 있었을지도 모른다."
-  ];
-
-  document.getElementById("calc").addEventListener("click", () => {
-    const monthlyIncome = Number(document.getElementById("monthlyIncome").value || 0);
-    const h = Number(document.getElementById("hour").value || 0);
-    const m = Number(document.getElementById("minute").value || 0);
-
-    if (monthlyIncome <= 0) {
-      alert("목표 월 수입을 입력해주세요.");
-      return;
-    }
-
-    const hourlyRate = monthlyIncome / WORKING_HOURS_PER_MONTH;
-    const totalHours = h + m / 60;
-    
-    if (totalHours <= 0) {
-      alert("시간 또는 분을 입력해주세요.");
-      return;
-    }
-
-    const money = Math.round(totalHours * hourlyRate);
-    const msg = messages[Math.floor(Math.random() * messages.length)];
-
-    document.getElementById("output").innerHTML = `
-      <div class="result">
-        <div class="money">${money.toLocaleString()}원</div>
-        <div class="msg">${msg}</div>
+      <div class="section">
+        <div class="label">에너지</div>
+        <div class="options" data-group="energy">
+          <div class="option">😵 낮음</div>
+          <div class="option">😐 보통</div>
+          <div class="option">🔥 높음</div>
+        </div>
       </div>
-    `;
-  });
-</script>
+
+      <div class="section">
+        <div class="label">멘탈</div>
+        <div class="options" data-group="mental">
+          <div class="option">😞 불안</div>
+          <div class="option">😐 안정</div>
+          <div class="option">😄 좋음</div>
+        </div>
+      </div>
+
+      <button class="cta" id="generateBtn">
+        오늘의 최소 행동 만들기 →
+      </button>
+    </div>
+
+    <div class="footer">
+      실패해도 기록은 남지 않습니다
+    </div>
+  </div>
+
+  <script>
+    const groups = document.querySelectorAll('.options');
+    groups.forEach(group => {
+      group.querySelectorAll('.option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          group.querySelectorAll('.option').forEach(o => o.classList.remove('active'));
+          opt.classList.add('active');
+        });
+      });
+    });
+
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      alert('다음 단계: AI 최소 행동 생성 화면');
+    });
+  </script>
+
 </body>
 </html>
