@@ -40,9 +40,9 @@
       min-height: 100vh;
       background: radial-gradient(circle at top, var(--bg2), var(--bg1));
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      padding: 24px;
+      padding: 40px 24px;
       transition: background 0.3s, color 0.3s;
     }
 
@@ -78,21 +78,6 @@
       color: #1a1f36;
     }
 
-    /* Disqus Container styling for better theme detection */
-    #disqus-container {
-      margin-top: 32px;
-      padding: 24px;
-      background: #1a1f36; /* Solid background for dark mode */
-      border-radius: var(--radius);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      transition: background 0.3s;
-    }
-
-    body.light #disqus-container {
-      background: #ffffff;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    }
-
     /* background glow */
     .bg-blur {
       position: fixed;
@@ -121,10 +106,6 @@
         0 20px 40px rgba(0,0,0,0.2),
         inset 0 1px 0 rgba(255,255,255,0.1);
       transition: transform .4s cubic-bezier(.2,.8,.2,1);
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
     }
 
     h1 {
@@ -190,10 +171,6 @@
       box-shadow: 0 12px 30px rgba(0,0,0,0.2);
     }
 
-    .cta:hover {
-      transform: translateY(-2px) scale(1.02);
-    }
-
     .footer {
       text-align: center;
       font-size: 12px;
@@ -201,15 +178,38 @@
       margin-top: 16px;
     }
 
+    /* Input 가독성 대폭 개선 */
     input, textarea {
       width: 100%;
       padding: 14px;
       border-radius: 12px;
       border: none;
       background: var(--input-bg);
-      color: var(--input-text);
+      color: #ffffff !important; /* 다크모드에서 흰색 글자 강제 */
       font-size: 14px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+    }
+
+    body.light input, body.light textarea {
+      color: #1a1f36 !important; /* 라이트모드에서 어두운 글자 강제 */
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+    }
+
+    /* Disqus 영역 가독성 개선 */
+    #disqus_container {
+      width: 100%;
+      max-width: 420px;
+      margin-top: 32px;
+      padding: 24px;
+      background: #1a1f36; /* Disqus가 다크모드를 인식할 수 있도록 단색 배경 적용 */
+      border-radius: var(--radius);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      z-index: 1;
+    }
+
+    body.light #disqus_container {
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
   </style>
 </head>
@@ -263,26 +263,25 @@
         </form>
       </div>
     </div>
+  </div>
 
-    <div style="margin-top: 32px; padding: 24px; background: var(--card); backdrop-filter: blur(20px); border-radius: var(--radius); box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
-      <div id="disqus_thread"></div>
-      <script>
-          (function() {
-          var d = document, s = d.createElement('script');
-          s.src = 'https://product-make-billion.disqus.com/embed.js';
-          s.setAttribute('data-timestamp', +new Date());
-          (d.head || d.body).appendChild(s);
-          })();
-      </script>
-      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    </div>
+  <div id="disqus_container">
+    <div id="disqus_thread"></div>
+  </div>
 
-    <div class="footer" id="footer">
-      실패해도 기록은 남지 않습니다
-    </div>
+  <div class="footer" id="footer">
+    실패해도 기록은 남지 않습니다
   </div>
 
   <script>
+    // Disqus 로드
+    (function() {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://product-make-billion.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
     const translations = {
       ko: {
         title: "오늘 상태만 알려줘",
@@ -338,32 +337,33 @@
         emailPlaceholder: "回复邮箱",
         messagePlaceholder: "请输入咨询内容",
         submit: "发送咨询",
-        footer: "即使失败也不会留下记录",
+        footer: "即使 실패해도 기록은 남지 않습니다",
         alert: "下一步：AI 最小行动生成屏幕"
       },
       ja: {
         title: "今日の状態を教えて",
         subtitle: "失敗しても大丈夫。システムは維持されます。",
         energy: "エネルギー",
-        energyLow: "😵 低い",
-        energyMid: "😐 普通",
-        energyHigh: "🔥 高い",
-        mental: "メンタル",
-        mentalLow: "😞 不安",
-        mentalMid: "😐 安定",
-        mentalHigh: "😄 良い",
-        cta: "今日の最小行動を作る →",
-        contact: "🤝 提携・お問い合わせ",
-        emailPlaceholder: "返信用メールアドレス",
-        messagePlaceholder: "お問い合わせ内容を入力してください",
-        submit: "送信する",
-        footer: "失敗しても記録は残りません",
-        alert: "次のステップ：AI最小行動生成画面"
+        energyLow: "😵 낮은",
+        energyMid: "😐 보통",
+        energyHigh: "🔥 높음",
+        mental: "멘탈",
+        mentalLow: "😞 불안",
+        mentalMid: "😐 안정",
+        mentalHigh: "😄 좋음",
+        cta: "오늘의 최소 행동 만들기 →",
+        contact: "🤝 제휴 및 서비스 문의",
+        emailPlaceholder: "답변받을 이메일",
+        messagePlaceholder: "문의 내용을 입력해주세요",
+        submit: "문의 보내기",
+        footer: "실패해도 기록은 남지 않습니다",
+        alert: "다음 단계: AI 최소 행동 생성 화면"
       }
     };
 
     function updateLanguage(lang) {
       const t = translations[lang];
+      if (!t) return;
       document.getElementById('title').innerText = t.title;
       document.getElementById('subtitle').innerText = t.subtitle;
       document.getElementById('label-energy').innerText = t.energy;
@@ -383,19 +383,21 @@
       localStorage.setItem('re-day-lang', lang);
     }
 
-    // Language Toggle
     const langSelect = document.getElementById('langSelect');
     langSelect.addEventListener('change', (e) => updateLanguage(e.target.value));
 
-    // Theme Toggle
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('light');
       const isLight = document.body.classList.contains('light');
       localStorage.setItem('re-day-theme', isLight ? 'light' : 'dark');
+      
+      // Disqus 테마 업데이트 유도 (리로드)
+      if (typeof DISQUS !== 'undefined') {
+        DISQUS.reset({ reload: true });
+      }
     });
 
-    // Initialization
     const savedLang = localStorage.getItem('re-day-lang') || 'ko';
     const savedTheme = localStorage.getItem('re-day-theme') || 'dark';
     
@@ -403,7 +405,6 @@
     updateLanguage(savedLang);
     if (savedTheme === 'light') document.body.classList.add('light');
 
-    // Option Selection Logic
     const groups = document.querySelectorAll('.options');
     groups.forEach(group => {
       group.querySelectorAll('.option').forEach(opt => {
