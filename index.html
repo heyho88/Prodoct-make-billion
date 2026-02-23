@@ -13,20 +13,58 @@
       --secondary: #ff9f9f;
       --accent: #6fffe9;
       --card: rgba(255,255,255,0.12);
+      --text: #ffffff;
       --radius: 16px;
+      --input-bg: rgba(255,255,255,0.08);
+      --input-text: #ffffff;
+    }
+
+    /* Light Mode */
+    body.light {
+      --bg1: #f0f2f5;
+      --bg2: #ffffff;
+      --primary: #5c5cff;
+      --secondary: #ff7c7c;
+      --accent: #00d1b2;
+      --card: rgba(0,0,0,0.05);
+      --text: #1a1f36;
+      --input-bg: rgba(0,0,0,0.05);
+      --input-text: #1a1f36;
     }
 
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Pretendard", sans-serif;
-      color: #fff;
+      color: var(--text);
       min-height: 100vh;
       background: radial-gradient(circle at top, var(--bg2), var(--bg1));
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 24px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Controls (Language & Theme) */
+    .controls {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .controls select, .controls button {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(124,124,255,0.3);
+      background: var(--card);
+      color: var(--text);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      font-size: 13px;
     }
 
     /* background glow */
@@ -54,8 +92,8 @@
       border-radius: var(--radius);
       padding: 24px;
       box-shadow:
-        0 20px 40px rgba(0,0,0,0.3),
-        inset 0 1px 0 rgba(255,255,255,0.15);
+        0 20px 40px rgba(0,0,0,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.1);
       transition: transform .4s cubic-bezier(.2,.8,.2,1);
     }
 
@@ -93,23 +131,23 @@
       flex: 1;
       padding: 14px 0;
       border-radius: 12px;
-      background: rgba(255,255,255,0.08);
+      background: var(--input-bg);
       text-align: center;
       cursor: pointer;
       transition: all .3s cubic-bezier(.2,.8,.2,1);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
     }
 
     .option:hover {
       transform: translateY(-2px) scale(1.03);
-      background: rgba(255,255,255,0.16);
+      opacity: 0.8;
     }
 
     .option.active {
       background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: #111;
+      color: #fff;
       font-weight: 600;
-      box-shadow: 0 10px 30px rgba(124,124,255,0.4);
+      box-shadow: 0 10px 30px rgba(124,124,255,0.3);
     }
 
     .cta {
@@ -118,17 +156,16 @@
       border-radius: 14px;
       border: none;
       background: linear-gradient(135deg, var(--secondary), var(--primary));
-      color: #111;
+      color: #fff;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
       transition: all .35s cubic-bezier(.2,.8,.2,1);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
     }
 
     .cta:hover {
       transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.5);
     }
 
     .footer {
@@ -137,32 +174,53 @@
       opacity: 0.6;
       margin-top: 16px;
     }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: var(--input-bg);
+      color: var(--input-text);
+      font-size: 14px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+    }
   </style>
 </head>
-<body>
+<body class="dark">
+
+  <div class="controls">
+    <select id="langSelect">
+      <option value="ko">한국어</option>
+      <option value="en">English</option>
+      <option value="zh">中文</option>
+      <option value="ja">日本語</option>
+    </select>
+    <button id="themeToggle">🌓</button>
+  </div>
 
   <div class="bg-blur"></div>
 
   <div class="app">
     <div class="card">
-      <h1>오늘 상태만 알려줘</h1>
-      <div class="subtitle">잘 못해도 괜찮아. 시스템은 유지돼.</div>
+      <h1 id="title">오늘 상태만 알려줘</h1>
+      <div class="subtitle" id="subtitle">잘 못해도 괜찮아. 시스템은 유지돼.</div>
 
       <div class="section">
-        <div class="label">에너지</div>
+        <div class="label" id="label-energy">에너지</div>
         <div class="options" data-group="energy">
-          <div class="option">😵 낮음</div>
-          <div class="option">😐 보통</div>
-          <div class="option">🔥 높음</div>
+          <div class="option" id="opt-energy-low">😵 낮음</div>
+          <div class="option" id="opt-energy-mid">😐 보통</div>
+          <div class="option" id="opt-energy-high">🔥 높음</div>
         </div>
       </div>
 
       <div class="section">
-        <div class="label">멘탈</div>
+        <div class="label" id="label-mental">멘탈</div>
         <div class="options" data-group="mental">
-          <div class="option">😞 불안</div>
-          <div class="option">😐 안정</div>
-          <div class="option">😄 좋음</div>
+          <div class="option" id="opt-mental-low">😞 불안</div>
+          <div class="option" id="opt-mental-mid">😐 안정</div>
+          <div class="option" id="opt-mental-high">😄 좋음</div>
         </div>
       </div>
 
@@ -171,23 +229,142 @@
       </button>
 
       <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; margin-top: 8px;">
-        <div class="label" style="text-align: center; margin-bottom: 16px;">🤝 제휴 및 서비스 문의</div>
+        <div class="label" id="label-contact" style="text-align: center; margin-bottom: 16px;">🤝 제휴 및 서비스 문의</div>
         <form action="https://formspree.io/f/maqdlblk" method="POST" style="display: flex; flex-direction: column; gap: 12px;">
-          <input type="email" name="email" placeholder="답변받을 이메일" required 
-            style="width: 100%; padding: 14px; border-radius: 12px; border: none; background: rgba(255,255,255,0.08); color: #fff; font-size: 14px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);">
-          <textarea name="message" placeholder="문의 내용을 입력해주세요" required 
-            style="width: 100%; padding: 14px; border-radius: 12px; border: none; background: rgba(255,255,255,0.08); color: #fff; font-size: 14px; min-height: 80px; font-family: inherit; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);"></textarea>
-          <button type="submit" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: #fff; font-size: 13px; cursor: pointer; transition: all 0.3s;">문의 보내기</button>
+          <input type="email" name="email" id="input-email" placeholder="답변받을 이메일" required>
+          <textarea name="message" id="input-message" placeholder="문의 내용을 입력해주세요" required style="min-height: 80px; font-family: inherit;"></textarea>
+          <button type="submit" id="btn-submit" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: var(--text); font-size: 13px; cursor: pointer; transition: all 0.3s;">문의 보내기</button>
         </form>
       </div>
     </div>
 
-    <div class="footer">
+    <div class="footer" id="footer">
       실패해도 기록은 남지 않습니다
     </div>
   </div>
 
   <script>
+    const translations = {
+      ko: {
+        title: "오늘 상태만 알려줘",
+        subtitle: "잘 못해도 괜찮아. 시스템은 유지돼.",
+        energy: "에너지",
+        energyLow: "😵 낮음",
+        energyMid: "😐 보통",
+        energyHigh: "🔥 높음",
+        mental: "멘탈",
+        mentalLow: "😞 불안",
+        mentalMid: "😐 안정",
+        mentalHigh: "😄 좋음",
+        cta: "오늘의 최소 행동 만들기 →",
+        contact: "🤝 제휴 및 서비스 문의",
+        emailPlaceholder: "답변받을 이메일",
+        messagePlaceholder: "문의 내용을 입력해주세요",
+        submit: "문의 보내기",
+        footer: "실패해도 기록은 남지 않습니다",
+        alert: "다음 단계: AI 최소 행동 생성 화면"
+      },
+      en: {
+        title: "Tell me your status",
+        subtitle: "It's okay to fail. The system stays.",
+        energy: "Energy",
+        energyLow: "😵 Low",
+        energyMid: "😐 Mid",
+        energyHigh: "🔥 High",
+        mental: "Mental",
+        mentalLow: "😞 Anxious",
+        mentalMid: "😐 Stable",
+        mentalHigh: "😄 Good",
+        cta: "Create Today's Task →",
+        contact: "🤝 Partnership & Contact",
+        emailPlaceholder: "Your Email",
+        messagePlaceholder: "Type your message here",
+        submit: "Send Message",
+        footer: "No records will be kept even if you fail",
+        alert: "Next Step: AI Action Generation Screen"
+      },
+      zh: {
+        title: "告诉我你的状态",
+        subtitle: "失败也没关系。系统将保持不变。",
+        energy: "能量",
+        energyLow: "😵 低",
+        energyMid: "😐 普通",
+        energyHigh: "🔥 高",
+        mental: "心态",
+        mentalLow: "😞 焦虑",
+        mentalMid: "😐 稳定",
+        mentalHigh: "😄 良好",
+        cta: "创建今日最小行动 →",
+        contact: "🤝 合作与咨询",
+        emailPlaceholder: "回复邮箱",
+        messagePlaceholder: "请输入咨询内容",
+        submit: "发送咨询",
+        footer: "即使失败也不会留下记录",
+        alert: "下一步：AI 最小行动生成屏幕"
+      },
+      ja: {
+        title: "今日の状態を教えて",
+        subtitle: "失敗しても大丈夫。システムは維持されます。",
+        energy: "エネルギー",
+        energyLow: "😵 低い",
+        energyMid: "😐 普通",
+        energyHigh: "🔥 高い",
+        mental: "メンタル",
+        mentalLow: "😞 不安",
+        mentalMid: "😐 安定",
+        mentalHigh: "😄 良い",
+        cta: "今日の最小行動を作る →",
+        contact: "🤝 提携・お問い合わせ",
+        emailPlaceholder: "返信用メールアドレス",
+        messagePlaceholder: "お問い合わせ内容を入力してください",
+        submit: "送信する",
+        footer: "失敗しても記録は残りません",
+        alert: "次のステップ：AI最小行動生成画面"
+      }
+    };
+
+    function updateLanguage(lang) {
+      const t = translations[lang];
+      document.getElementById('title').innerText = t.title;
+      document.getElementById('subtitle').innerText = t.subtitle;
+      document.getElementById('label-energy').innerText = t.energy;
+      document.getElementById('opt-energy-low').innerText = t.energyLow;
+      document.getElementById('opt-energy-mid').innerText = t.energyMid;
+      document.getElementById('opt-energy-high').innerText = t.energyHigh;
+      document.getElementById('label-mental').innerText = t.mental;
+      document.getElementById('opt-mental-low').innerText = t.mentalLow;
+      document.getElementById('opt-mental-mid').innerText = t.mentalMid;
+      document.getElementById('opt-mental-high').innerText = t.mentalHigh;
+      document.getElementById('generateBtn').innerText = t.cta;
+      document.getElementById('label-contact').innerText = t.contact;
+      document.getElementById('input-email').placeholder = t.emailPlaceholder;
+      document.getElementById('input-message').placeholder = t.messagePlaceholder;
+      document.getElementById('btn-submit').innerText = t.submit;
+      document.getElementById('footer').innerText = t.footer;
+      localStorage.setItem('re-day-lang', lang);
+    }
+
+    // Language Toggle
+    const langSelect = document.getElementById('langSelect');
+    langSelect.addEventListener('change', (e) => updateLanguage(e.target.value));
+
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const isLight = document.body.classList.contains('light');
+      localStorage.setItem('re-day-theme', isLight ? 'light' : 'dark');
+    });
+
+    // Initialization
+    const savedLang = localStorage.getItem('re-day-lang') || 'ko';
+    const savedTheme = localStorage.getItem('re-day-theme') || 'dark';
+    
+    langSelect.value = savedLang;
+    updateLanguage(savedLang);
+    if (savedTheme === 'light') document.body.classList.add('light');
+
+    // Option Selection Logic
     const groups = document.querySelectorAll('.options');
     groups.forEach(group => {
       group.querySelectorAll('.option').forEach(opt => {
@@ -199,7 +376,8 @@
     });
 
     document.getElementById('generateBtn').addEventListener('click', () => {
-      alert('다음 단계: AI 최소 행동 생성 화면');
+      const lang = langSelect.value;
+      alert(translations[lang].alert);
     });
   </script>
 
