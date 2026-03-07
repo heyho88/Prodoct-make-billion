@@ -213,6 +213,11 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.05);
       color-scheme: light;
     }
+
+    /* 다크 모드: Disqus iframe 색상 반전으로 가독성 확보 */
+    body:not(.light) #disqus_thread iframe {
+      filter: invert(0.88) hue-rotate(180deg);
+    }
   </style>
 </head>
 <body class="dark">
