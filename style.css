@@ -67,6 +67,15 @@ body {
   background-clip: text;
   text-decoration: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-logo-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .nav-links {
   display: flex;
