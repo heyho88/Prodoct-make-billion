@@ -339,6 +339,17 @@
         <button class="btn-pass" id="btn-pass">⏭ 오늘은 패스</button>
       </div>
       <p class="result-msg" id="result-msg" aria-live="polite"></p>
+
+      <!-- 성장 시각화 카드 (완료 후 표시) -->
+      <div class="growth-card" id="growth-card">
+        <div class="growth-plant-wrap">
+          <span class="growth-plant-icon" id="growth-plant-icon">🌱</span>
+        </div>
+        <p class="growth-day-line" id="growth-day-line">당신은 1일째입니다</p>
+        <p class="growth-formula" id="growth-formula">1.01<sup>1</sup> = 1.01배의 당신입니다</p>
+        <p class="growth-msg-text" id="growth-msg-text">첫 번째 1%. 시작이 전부야.</p>
+      </div>
+
       <button class="btn-restart" id="btn-restart">↩ 처음으로</button>
     </div>
   </div>
@@ -350,6 +361,25 @@
 ════════════════════════════════════════ -->
 <div class="page-wrap">
 
+  <!-- 1% 복리 계산기 -->
+  <section id="compound-calc" aria-label="1% 복리 계산기">
+    <div class="calc-card">
+      <div class="section-tag">1% 복리</div>
+      <h2 class="calc-title">매일 1%가 쌓이면</h2>
+      <div class="calc-controls">
+        <input type="range" id="calc-slider" min="1" max="365" value="30" class="calc-slider" aria-label="일수 선택">
+        <div class="calc-day-row">
+          <input type="number" id="calc-days-num" min="1" max="365" value="30" class="calc-num-input" aria-label="직접 입력">
+          <span class="calc-day-unit">일</span>
+        </div>
+      </div>
+      <div class="calc-result-area">
+        <p class="calc-sentence" id="calc-sentence">30일 후 당신은 <span id="calc-sentence-mult">1.35</span>배의 당신입니다</p>
+        <div class="calc-big-num" id="calc-big-num">1.35<span class="calc-times">×</span></div>
+        <p class="calc-compare" id="calc-compare">한 달. 주변이 슬슬 눈치채기 시작해.</p>
+      </div>
+    </div>
+  </section>
 
   <!-- 읽을거리 -->
   <section id="articles" aria-label="읽을거리 — 습관 형성 가이드">
